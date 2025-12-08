@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WMEBEM RSI Documentation Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #64748b; border-radius: 4px; }
+        html { scroll-behavior: smooth; }
+        
+        input, textarea, select { border-color: #94a3b8; outline: none; }
+        input:focus, textarea:focus, select:focus { border-color: #2563eb; ring: 2px; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2); }
+
+        /* Rich Text Output Styles */
+        .rich-output {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: #334155;
+            background-color: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            min-height: 24rem;
+            overflow-y: auto;
+            white-space: pre-wrap; 
+        }
+        .rich-output strong { font-weight: 800; color: #0f172a; }
+        .rich-output u { text-decoration: underline; }
+
+        /* Buttons */
+        .std-btn { transition: all 0.1s; border-color: #cbd5e1; background-color: #f8fafc; color: #334155; }
+        .std-btn:hover { background-color: #e2e8f0; }
+        .std-btn.active { background-color: #2563eb; color: white; border-color: #1d4ed8; font-weight: 800; }
+
+        .toggle-chk:checked + div { background-color: #10b981; color: white; border-color: #059669; }
+        .toggle-chk-red:checked + div { background-color: #dc2626; color: white; border-color: #b91c1c; }
+        
+        /* Time Button */
+        .time-btn {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: #e2e8f0;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+            cursor: pointer;
+            margin-left: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            transition: all 0.2s;
+            font-weight: bold;
+        }
+        .time-btn:hover { background: #cbd5e1; }
+        .time-btn.recorded { background: #dcfce7; color: #166534; border-color: #86efac; font-weight: 800; }
+
+        /* Card Styles matching PDF */
+        .card-red { border-left: 8px solid #dc2626; }
+        .card-orange { border-left: 8px solid #f97316; }
+        .card-yellow { border-left: 8px solid #eab308; }
+        .card-blue { border-left: 8px solid #2563eb; }
+
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-900 antialiased pb-10">
+
+    <header class="bg-white shadow-sm sticky top-0 z-50 border-b border-slate-300">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <img src="https://iili.io/KGQOvkl.md.png" alt="WMEBEM Logo" class="h-16 md:h-20 w-auto object-contain">
+                <div>
+                    <h1 class="text-xl md:text-2xl font-black text-slate-900 leading-tight">ED RSI Tool <span class="text-xs font-normal text-slate-500 bg-slate-100 px-2 py-0.5 rounded border ml-2">v1.0</span></h1>
+                    <p class="text-xs text-green-600 font-bold flex items-center gap-1" id="saveStatus">
+                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Auto-save enabled
+                    </p>
+                </div>
+            </div>
+            <nav class="hidden lg:flex space-x-1 bg-slate-100 p-1 rounded-lg text-xs font-bold text-slate-600 border border-slate-300">
+                <a href="#sec-prep" class="px-3 py-1 hover:bg-white rounded transition">Prep</a>
+                <a href="#sec-drugs" class="px-3 py-1 hover:bg-white rounded transition">Drugs</a>
+                <a href="#sec-proc" class="px-3 py-1 hover:bg-white rounded transition">Procedure</a>
+                <a href="#sec-post" class="px-3 py-1 hover:bg-white rounded transition">Post-RSI</a>
+                <button id="resetData" class="px-3 py-1 bg-red-100 text-red-700 hover:bg-red-200 rounded transition ml-2 border border-red-200">Reset</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <div class="lg:col-span-7 xl:col-span-8 flex flex-col space-y-6">
+
+                <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-400 card-blue">
+                    <h2 class="text-xl font-black text-slate-800 mb-4 border-b border-slate-200 pb-2">1. Team & Patient</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Weight (kg)</label>
+                            <input type="number" id="weight" class="w-full text-xl font-mono font-black px-3 py-2 border border-slate-400 rounded focus:ring-blue-500" placeholder="Required for calcs">
+                            <p class="text-[10px] text-slate-500 mt-1">Updates drug calculations below.</p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Indication</label>
+                            <input type="text" id="indication" class="w-full px-3 py-2 border border-slate-400 rounded text-sm font-medium" placeholder="e.g. GCS < 8, Aspiration Risk">
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 p-3 rounded border border-slate-300">
+                        <span class="text-xs font-black text-slate-500 uppercase block mb-2">Role Allocation</span>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <label class="flex items-center space-x-2"><input type="checkbox" class="role-chk rounded text-blue-600" value="Team Leader / Intubator" checked><span class="text-sm font-bold">RSI Lead/Intubator</span></label>
+                            <label class="flex items-center space-x-2"><input type="checkbox" class="role-chk rounded text-blue-600" value="Intubation Assistant" checked><span class="text-sm font-bold">Intubation Assistant</span></label>
+                            <label class="flex items-center space-x-2"><input type="checkbox" class="role-chk rounded text-blue-600" value="Drug Admin / Vitals" checked><span class="text-sm font-bold">Drug Admin / Vitals Monitor</span></label>
+                            <label class="flex items-center space-x-2"><input type="checkbox" class="role-chk rounded text-blue-600" value="Cricoid Admin"><span class="text-sm font-medium">Cricoid Administrator</span></label>
+                            <label class="flex items-center space-x-2"><input type="checkbox" class="role-chk rounded text-blue-600" value="MILS Admin"><span class="text-sm font-medium">MILS Administrator</span></label>
+                        </div>
+                    </div>
+                </section>
+
+                <div id="sec-prep"><h2 class="text-2xl font-black text-slate-900 border-b-4 border-slate-900 pb-2">Preparation Phase</h2></div>
+
+                <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-400 card-red">
+                    <h3 class="text-lg font-black text-red-700 mb-3 uppercase">Lead / Intubator Actions</h3>
+                    
+                    <div class="mb-4">
+                        <span class="text-xs font-black text-slate-600 uppercase block mb-2">Airway Assessment</span>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                             <label class="cursor-pointer text-center"><input type="checkbox" class="sr-only toggle-chk" id="check_moans"><div class="py-1 px-2 border rounded text-xs font-bold transition">MOANS (Mask)</div></label>
+                             <label class="cursor-pointer text-center"><input type="checkbox" class="sr-only toggle-chk" id="check_rods"><div class="py-1 px-2 border rounded text-xs font-bold transition">RODS (SGA)</div></label>
+                             <label class="cursor-pointer text-center"><input type="checkbox" class="sr-only toggle-chk" id="check_lemon"><div class="py-1 px-2 border rounded text-xs font-bold transition">LEMON (Laryng)</div></label>
+                             <label class="cursor-pointer text-center"><input type="checkbox" class="sr-only toggle-chk" id="check_short"><div class="py-1 px-2 border rounded text-xs font-bold transition">SHORT (Surgical)</div></label>
+                        </div>
+                        <textarea id="assessment_notes" rows="1" class="w-full mt-2 px-2 py-1 border border-slate-300 rounded text-sm" placeholder="Assessment positives/notes..."></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <span class="text-xs font-black text-slate-600 uppercase block">Optimisation</span>
+                            <label class="flex items-center space-x-2"><input type="checkbox" id="opt_pos" class="rounded text-red-600"><span class="text-sm">Ramp / Reverse Trendelenburg</span></label>
+                            <label class="flex items-center space-x-2"><input type="checkbox" id="opt_preox" class="rounded text-red-600"><span class="text-sm">Pre-Ox (Mapleson C / Nasal 15L)</span></label>
+                            <label class="flex items-center space-x-2"><input type="checkbox" id="opt_fluids" class="rounded text-red-600"><span class="text-sm">Fluid / Blood Resus</span></label>
+                        </div>
+                        <div class="space-y-2">
+                             <span class="text-xs font-black text-slate-600 uppercase block">Briefing</span>
+                             <label class="flex items-center space-x-2 bg-red-50 p-2 rounded border border-red-100"><input type="checkbox" id="brief_complete" class="rounded text-red-600"><span class="text-sm font-bold text-red-900">Final Team Brief Completed</span></label>
+                             <label class="flex items-center space-x-2"><input type="checkbox" id="brief_plan" class="rounded text-red-600"><span class="text-sm">Failed Airway Plan Communicated</span></label>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-400 card-orange">
+                    <h3 class="text-lg font-black text-orange-600 mb-3 uppercase">Assistant Actions</h3>
+                    <div class="grid grid-cols-2 gap-y-2 gap-x-4">
+                        <label class="flex items-center space-x-2"><input type="checkbox" id="kit_laryngo" class="rounded text-orange-500"><span class="text-sm">Laryngoscope Checked</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" id="kit_ett" class="rounded text-orange-500"><span class="text-sm">ETT Size 7/8 Checked/Lubed</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" id="kit_bougie" class="rounded text-orange-500"><span class="text-sm">Bougie Available</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" id="kit_suction" class="rounded text-orange-500"><span class="text-sm">Suction Under Mattress</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" id="kit_circuit" class="rounded text-orange-500"><span class="text-sm">Circuit/Capnography Ready</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" id="kit_vent" class="rounded text-orange-500"><span class="text-sm">Ventilator Set & Checked</span></label>
+                    </div>
+                </section>
+
+                <section id="sec-drugs" class="bg-white p-5 rounded-xl shadow-sm border border-slate-400 card-yellow">
+                    <h3 class="text-lg font-black text-yellow-600 mb-3 uppercase">Drugs & Monitoring</h3>
+                    
+                    <div class="bg-yellow-50 p-3 rounded border border-yellow-200 mb-4">
+                        <div class="flex justify-between items-center mb-2">
+                             <span class="text-xs font-black text-slate-700 uppercase">Dose Calculator (Check Protocol)</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div class="bg-white p-2 rounded border border-yellow-300">
+                                <span class="block text-[10px] text-slate-500 font-bold uppercase">Ketamine (2mg/kg)</span>
+                                <span id="calc_ket" class="text-lg font-black text-slate-900">- mg</span>
+                                <span id="vol_ket" class="text-xs text-slate-500 block">(- ml @ 10mg/ml)</span>
+                            </div>
+                            <div class="bg-white p-2 rounded border border-yellow-300">
+                                <span class="block text-[10px] text-slate-500 font-bold uppercase">Rocuronium (1.2mg/kg)</span>
+                                <span id="calc_roc" class="text-lg font-black text-slate-900">- mg</span>
+                                <span id="vol_roc" class="text-xs text-slate-500 block">(- ml @ 10mg/ml)</span>
+                            </div>
+                            <div class="bg-white p-2 rounded border border-yellow-300">
+                                <span class="block text-[10px] text-slate-500 font-bold uppercase">Metaraminol</span>
+                                <span class="text-sm font-bold text-slate-900">0.5mg/ml</span>
+                                <span class="text-xs text-slate-500 block">Titrate to effect</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3">
+                         <div>
+                             <span class="text-xs font-black text-slate-600 uppercase block mb-1">Drugs Prepared</span>
+                             <input type="text" id="drugs_given" class="w-full px-3 py-2 border border-slate-300 rounded text-sm font-medium" placeholder="e.g. Ketamine 150mg, Roc 100mg">
+                         </div>
+                         <div>
+                            <span class="text-xs font-black text-slate-600 uppercase block mb-1">Access & Monitor</span>
+                            <div class="space-y-1">
+                                <label class="flex items-center space-x-2"><input type="checkbox" id="mon_iv" class="rounded text-yellow-600"><span class="text-sm">2x IV/IO Access (Free flow)</span></label>
+                                <label class="flex items-center space-x-2"><input type="checkbox" id="mon_obs" class="rounded text-yellow-600"><span class="text-sm">Monitoring (SpO2, NIBP, ECG, ETCO2)</span></label>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div id="sec-proc"><h2 class="text-2xl font-black text-slate-900 border-b-4 border-slate-900 pb-2">Procedure</h2></div>
+
+                <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-400">
+                    
+                    <div class="mb-5 flex flex-col sm:flex-row gap-4 items-center bg-slate-50 p-4 rounded-xl border border-slate-300">
+                        <button id="btn-induction-time" class="w-full sm:w-auto py-3 px-6 bg-red-600 hover:bg-red-700 text-white font-black rounded-lg shadow-md active:scale-95 transition">
+                            🕒 LOG INDUCTION TIME
+                        </button>
+                        <div class="flex-1 text-center sm:text-left">
+                            <span id="display_induction_time" class="text-xl font-mono font-bold text-slate-800">--:--</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-5">
+                        <div>
+                            <span class="text-xs font-black text-slate-600 uppercase block mb-2">Laryngoscopy Grade (C&L)</span>
+                            <div class="flex gap-2">
+                                <label class="cursor-pointer flex-1"><input type="radio" name="cl_grade" value="1" class="sr-only toggle-chk"><div class="text-center py-2 border rounded font-bold transition">1</div></label>
+                                <label class="cursor-pointer flex-1"><input type="radio" name="cl_grade" value="2" class="sr-only toggle-chk"><div class="text-center py-2 border rounded font-bold transition">2</div></label>
+                                <label class="cursor-pointer flex-1"><input type="radio" name="cl_grade" value="3" class="sr-only toggle-chk"><div class="text-center py-2 border rounded font-bold transition">3</div></label>
+                                <label class="cursor-pointer flex-1"><input type="radio" name="cl_grade" value="4" class="sr-only toggle-chk"><div class="text-center py-2 border rounded font-bold transition">4</div></label>
+                            </div>
+                        </div>
+                        <div>
+                             <span class="text-xs font-black text-slate-600 uppercase block mb-2">Tube Details</span>
+                             <div class="flex gap-2">
+                                 <input type="text" id="tube_size" class="w-1/2 px-3 py-2 border border-slate-300 rounded text-sm font-bold" placeholder="Size (e.g. 8.0)">
+                                 <input type="text" id="tube_length" class="w-1/2 px-3 py-2 border border-slate-300 rounded text-sm font-bold" placeholder="Length (@ teeth)">
+                             </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-green-50 p-4 rounded-xl border border-green-200 mb-5">
+                        <h4 class="text-sm font-black text-green-800 uppercase mb-2">Confirmation</h4>
+                        <div class="space-y-2">
+                             <label class="flex items-center space-x-2"><input type="checkbox" id="conf_vis" class="rounded text-green-600"><span class="text-sm font-medium">Visualisation (Cords)</span></label>
+                             <label class="flex items-center space-x-2"><input type="checkbox" id="conf_etco2" class="rounded text-green-600"><span class="text-sm font-bold">Waveform Capnography (Required)</span></label>
+                             <label class="flex items-center space-x-2"><input type="checkbox" id="conf_ausc" class="rounded text-green-600"><span class="text-sm font-medium">Auscultation (Equal AE)</span></label>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-300 pt-4">
+                        <label class="flex items-center space-x-2 cursor-pointer mb-2">
+                            <input type="checkbox" id="failed_airway" class="w-5 h-5 text-red-600 rounded focus:ring-red-600">
+                            <span class="font-black text-red-700 uppercase">⚠️ Failed Airway / Difficult Intubation</span>
+                        </label>
+                        <div id="failed_airway_details" class="hidden pl-7 space-y-2">
+                            <div class="grid grid-cols-2 gap-2">
+                                <label class="cursor-pointer text-center"><input type="checkbox" id="plan_a_fail" class="sr-only toggle-chk-red"><div class="py-1 px-2 border border-red-200 rounded text-xs font-bold transition">Plan A Failed (3 Attempts)</div></label>
+                                <label class="cursor-pointer text-center"><input type="checkbox" id="plan_b_used" class="sr-only toggle-chk-red"><div class="py-1 px-2 border border-red-200 rounded text-xs font-bold transition">Plan B (SGA/iGel) Used</div></label>
+                                <label class="cursor-pointer text-center"><input type="checkbox" id="plan_c_used" class="sr-only toggle-chk-red"><div class="py-1 px-2 border border-red-200 rounded text-xs font-bold transition">Plan C (Face Mask) Used</div></label>
+                                <label class="cursor-pointer text-center"><input type="checkbox" id="plan_d_used" class="sr-only toggle-chk-red"><div class="py-1 px-2 border border-red-200 rounded text-xs font-bold transition">Plan D (FONA) Required</div></label>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div id="sec-post"><h2 class="text-2xl font-black text-slate-900 border-b-4 border-slate-900 pb-2">Post-RSI Care</h2></div>
+
+                <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-400">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+                         <div><label class="block text-xs font-bold text-slate-600 uppercase mb-1">Vent Mode</label><input type="text" id="vent_mode" class="w-full px-2 py-1 border border-slate-300 rounded text-sm" value="IPPV"></div>
+                         <div><label class="block text-xs font-bold text-slate-600 uppercase mb-1">TV (6-8ml/kg)</label><input type="text" id="vent_tv" class="w-full px-2 py-1 border border-slate-300 rounded text-sm" placeholder="ml"></div>
+                         <div><label class="block text-xs font-bold text-slate-600 uppercase mb-1">RR</label><input type="text" id="vent_rr" class="w-full px-2 py-1 border border-slate-300 rounded text-sm" value="15"></div>
+                         <div><label class="block text-xs font-bold text-slate-600 uppercase mb-1">PEEP</label><input type="text" id="vent_peep" class="w-full px-2 py-1 border border-slate-300 rounded text-sm" value="5"></div>
+                         <div><label class="block text-xs font-bold text-slate-600 uppercase mb-1">FiO2</label><input type="text" id="vent_fio2" class="w-full px-2 py-1 border border-slate-300 rounded text-sm" value="1.0"></div>
+                    </div>
+                    
+                    <div>
+                        <span class="text-xs font-black text-slate-600 uppercase block mb-1">Post-RSI Sedation Plan</span>
+                        <input type="text" id="post_sedation" class="w-full px-3 py-2 border border-slate-300 rounded text-sm font-medium" placeholder="e.g. Propofol infusion started @ X ml/hr">
+                    </div>
+                </section>
+
+                <footer class="mt-8 py-8 text-center border-t border-slate-300">
+                    <p class="text-xs text-slate-500 font-bold mb-1">&copy; West Midlands Evidence Based Emergency Medicine Ltd.</p>
+                </footer>
+            </div>
+
+            <div class="lg:col-span-5 xl:col-span-4 relative">
+                <div class="sticky top-24 space-y-6">
+                    <section class="bg-white p-4 rounded-xl shadow-lg border border-slate-300">
+                        <div class="flex justify-between items-center mb-3">
+                            <h2 class="text-sm font-bold text-slate-700 uppercase tracking-wide">Documentation Note</h2>
+                            <button id="copyNote" class="px-3 py-1 text-xs font-bold bg-blue-600 text-white rounded hover:bg-blue-700 transition shadow-sm">Copy Rich Text</button>
+                        </div>
+                        <div id="rsiNoteOutput" contenteditable="true" class="rich-output focus:ring-2 ring-blue-500 ring-offset-2"></div>
+                    </section>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- DATA STORE ---
+            let rsiData = {
+                weight: '',
+                indication: '',
+                roles: ['Team Leader / Intubator', 'Intubation Assistant', 'Drug Admin / Vitals'],
+                prep: {
+                    moans: false, rods: false, lemon: false, short: false, notes: '',
+                    pos: false, preox: false, fluids: false,
+                    briefComplete: false, briefPlan: false
+                },
+                kit: { laryngo: false, ett: false, bougie: false, suction: false, circuit: false, vent: false },
+                drugs: {
+                    given: '',
+                    iv: false, obs: false
+                },
+                procedure: {
+                    time: '',
+                    grade: '',
+                    size: '', length: '',
+                    vis: false, etco2: false, ausc: false,
+                    failed: false, planA: false, planB: false, planC: false, planD: false
+                },
+                post: {
+                    mode: 'IPPV', tv: '', rr: '15', peep: '5', fio2: '1.0', sedation: ''
+                }
+            };
+
+            // --- LOCAL STORAGE ---
+            function saveState() {
+                localStorage.setItem('wmebem_rsi_data', JSON.stringify(rsiData));
+            }
+
+            function loadState() {
+                const saved = localStorage.getItem('wmebem_rsi_data');
+                if (saved) {
+                    try {
+                        const parsed = JSON.parse(saved);
+                        rsiData = { ...rsiData, ...parsed }; // Merge to ensure structure integrity
+                        restoreUI();
+                    } catch (e) { console.error("Error loading save data", e); }
+                }
+            }
+
+            function restoreUI() {
+                const d = rsiData;
+                const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val || ''; };
+                const setCheck = (id, val) => { const el = document.getElementById(id); if(el) el.checked = !!val; };
+
+                setVal('weight', d.weight);
+                setVal('indication', d.indication);
+                updateCalc(d.weight);
+
+                // Roles
+                document.querySelectorAll('.role-chk').forEach(chk => {
+                    chk.checked = d.roles.includes(chk.value);
+                });
+
+                // Prep
+                setCheck('check_moans', d.prep.moans);
+                setCheck('check_rods', d.prep.rods);
+                setCheck('check_lemon', d.prep.lemon);
+                setCheck('check_short', d.prep.short);
+                setVal('assessment_notes', d.prep.notes);
+                setCheck('opt_pos', d.prep.pos);
+                setCheck('opt_preox', d.prep.preox);
+                setCheck('opt_fluids', d.prep.fluids);
+                setCheck('brief_complete', d.prep.briefComplete);
+                setCheck('brief_plan', d.prep.briefPlan);
+
+                // Kit
+                setCheck('kit_laryngo', d.kit.laryngo);
+                setCheck('kit_ett', d.kit.ett);
+                setCheck('kit_bougie', d.kit.bougie);
+                setCheck('kit_suction', d.kit.suction);
+                setCheck('kit_circuit', d.kit.circuit);
+                setCheck('kit_vent', d.kit.vent);
+
+                // Drugs
+                setVal('drugs_given', d.drugs.given);
+                setCheck('mon_iv', d.drugs.iv);
+                setCheck('mon_obs', d.drugs.obs);
+
+                // Procedure
+                if(d.procedure.time) {
+                    document.getElementById('display_induction_time').innerText = d.procedure.time;
+                    document.getElementById('btn-induction-time').classList.add('opacity-50', 'cursor-not-allowed');
+                }
+                if(d.procedure.grade) {
+                    const r = document.querySelector(`input[name="cl_grade"][value="${d.procedure.grade}"]`);
+                    if(r) r.checked = true;
+                }
+                setVal('tube_size', d.procedure.size);
+                setVal('tube_length', d.procedure.length);
+                setCheck('conf_vis', d.procedure.vis);
+                setCheck('conf_etco2', d.procedure.etco2);
+                setCheck('conf_ausc', d.procedure.ausc);
+
+                setCheck('failed_airway', d.procedure.failed);
+                if(d.procedure.failed) document.getElementById('failed_airway_details').classList.remove('hidden');
+                setCheck('plan_a_fail', d.procedure.planA);
+                setCheck('plan_b_used', d.procedure.planB);
+                setCheck('plan_c_used', d.procedure.planC);
+                setCheck('plan_d_used', d.procedure.planD);
+
+                // Post
+                setVal('vent_mode', d.post.mode);
+                setVal('vent_tv', d.post.tv);
+                setVal('vent_rr', d.post.rr);
+                setVal('vent_peep', d.post.peep);
+                setVal('vent_fio2', d.post.fio2);
+                setVal('post_sedation', d.post.sedation);
+
+                updateNote();
+            }
+
+            // --- CALCULATOR ---
+            function updateCalc(w) {
+                const kg = parseFloat(w);
+                if(!isNaN(kg) && kg > 0) {
+                    // Ketamine 2mg/kg (10mg/ml)
+                    const ketDose = Math.round(kg * 2);
+                    const ketVol = (ketDose / 10).toFixed(1);
+                    document.getElementById('calc_ket').innerText = `${ketDose} mg`;
+                    document.getElementById('vol_ket').innerText = `(${ketVol} ml @ 10mg/ml)`;
+
+                    // Rocuronium 1.2mg/kg (10mg/ml)
+                    const rocDose = Math.round(kg * 1.2);
+                    const rocVol = (rocDose / 10).toFixed(1);
+                    document.getElementById('calc_roc').innerText = `${rocDose} mg`;
+                    document.getElementById('vol_roc').innerText = `(${rocVol} ml @ 10mg/ml)`;
+
+                    // Update TV suggestion placeholder
+                    const tvMin = Math.round(kg * 6);
+                    const tvMax = Math.round(kg * 8);
+                    document.getElementById('vent_tv').placeholder = `${tvMin}-${tvMax} ml`;
+                } else {
+                    document.getElementById('calc_ket').innerText = `- mg`;
+                    document.getElementById('vol_ket').innerText = `(- ml @ 10mg/ml)`;
+                    document.getElementById('calc_roc').innerText = `- mg`;
+                    document.getElementById('vol_roc').innerText = `(- ml @ 10mg/ml)`;
+                }
+            }
+
+            // --- NOTE GENERATOR ---
+            function updateNote() {
+                const d = rsiData;
+                let h = `<strong>Emergency Department RSI Procedure Note</strong><br>`;
+                
+                // Indication & Demographics
+                h += `<strong>Indication:</strong> ${d.indication || 'Not specified'}.<br>`;
+                if(d.weight) h += `Patient Weight: ${d.weight} kg.<br>`;
+                
+                // Team
+                if(d.roles.length) h += `<strong>Team:</strong> ${d.roles.join(', ')}.<br>`;
+                
+                // Prep
+                h += `<br><strong>Preparation (Checklist Complete):</strong><br>`;
+                let assess = [];
+                if(d.prep.moans) assess.push('MOANS');
+                if(d.prep.rods) assess.push('RODS');
+                if(d.prep.lemon) assess.push('LEMON');
+                if(d.prep.short) assess.push('SHORT');
+                if(assess.length) h += `- Airway Assessment: ${assess.join(', ')} checked. `;
+                if(d.prep.notes) h += `(${d.prep.notes})`;
+                h+= `<br>`;
+                
+                let opt = [];
+                if(d.prep.pos) opt.push('Positioned (Ramp/Trend)');
+                if(d.prep.preox) opt.push('Pre-oxygenated');
+                if(d.prep.fluids) opt.push('Optimised (Fluids)');
+                if(opt.length) h += `- Optimisation: ${opt.join(', ')}.<br>`;
+                
+                if(d.prep.briefComplete) h += `- <strong>Final Team Brief Completed.</strong> Failed airway plan communicated.<br>`;
+
+                // Drugs / Access
+                h += `- Access & Monitoring: ${d.drugs.iv ? '2x IV/IO confirmed' : 'Access unchecked'}, ${d.drugs.obs ? 'Full monitoring attached' : 'Monitoring unchecked'}.<br>`;
+                if(d.drugs.given) h += `<strong>Drugs Administered:</strong> ${d.drugs.given}.<br>`;
+
+                // Procedure
+                h += `<br><strong>Procedure:</strong><br>`;
+                if(d.procedure.time) h += `Induction Time: ${d.procedure.time}<br>`;
+                
+                if(d.procedure.grade || d.procedure.size) {
+                    h += `Laryngoscopy: Grade ${d.procedure.grade || '-'}. Tube Size: ${d.procedure.size || '-'} mm ID (Length: ${d.procedure.length || '-'} cm @ teeth).<br>`;
+                }
+                
+                let conf = [];
+                if(d.procedure.vis) conf.push('Cords Visualised');
+                if(d.procedure.etco2) conf.push('Waveform Capnography');
+                if(d.procedure.ausc) conf.push('Auscultation');
+                if(conf.length) h += `Confirmation: ${conf.join(', ')}.<br>`;
+                
+                if(d.procedure.failed) {
+                    h += `<strong>⚠️ DIFFICULT AIRWAY ENCOUNTERED:</strong> `;
+                    let failDetails = [];
+                    if(d.procedure.planA) failDetails.push('Plan A Failed');
+                    if(d.procedure.planB) failDetails.push('Plan B (SGA) Used');
+                    if(d.procedure.planC) failDetails.push('Plan C (Mask) Used');
+                    if(d.procedure.planD) failDetails.push('Plan D (FONA) Required');
+                    h += `${failDetails.join(', ')}.<br>`;
+                }
+
+                // Post
+                h += `<br><strong>Post-Intubation Care:</strong><br>`;
+                h += `Ventilator: Mode ${d.post.mode}, TV ${d.post.tv}ml, RR ${d.post.rr}, PEEP ${d.post.peep}, FiO2 ${d.post.fio2}.<br>`;
+                if(d.post.sedation) h += `Sedation: ${d.post.sedation}.<br>`;
+
+                document.getElementById('rsiNoteOutput').innerHTML = h;
+                saveState();
+            }
+
+            // --- EVENT LISTENERS ---
+            
+            // Weight
+            document.getElementById('weight').addEventListener('input', e => {
+                rsiData.weight = e.target.value;
+                updateCalc(e.target.value);
+                updateNote();
+            });
+            document.getElementById('indication').addEventListener('input', e => { rsiData.indication = e.target.value; updateNote(); });
+
+            // Roles
+            document.querySelectorAll('.role-chk').forEach(chk => chk.addEventListener('change', e => {
+                if(e.target.checked) rsiData.roles.push(e.target.value);
+                else rsiData.roles = rsiData.roles.filter(x => x !== e.target.value);
+                updateNote();
+            }));
+
+            // Checkbox Binder helper
+            const bindChk = (id, obj, key) => {
+                document.getElementById(id).addEventListener('change', e => {
+                    obj[key] = e.target.checked;
+                    updateNote();
+                });
+            };
+
+            // Prep
+            bindChk('check_moans', rsiData.prep, 'moans');
+            bindChk('check_rods', rsiData.prep, 'rods');
+            bindChk('check_lemon', rsiData.prep, 'lemon');
+            bindChk('check_short', rsiData.prep, 'short');
+            document.getElementById('assessment_notes').addEventListener('input', e => { rsiData.prep.notes = e.target.value; updateNote(); });
+            bindChk('opt_pos', rsiData.prep, 'pos');
+            bindChk('opt_preox', rsiData.prep, 'preox');
+            bindChk('opt_fluids', rsiData.prep, 'fluids');
+            bindChk('brief_complete', rsiData.prep, 'briefComplete');
+            bindChk('brief_plan', rsiData.prep, 'briefPlan');
+
+            // Kit
+            bindChk('kit_laryngo', rsiData.kit, 'laryngo');
+            bindChk('kit_ett', rsiData.kit, 'ett');
+            bindChk('kit_bougie', rsiData.kit, 'bougie');
+            bindChk('kit_suction', rsiData.kit, 'suction');
+            bindChk('kit_circuit', rsiData.kit, 'circuit');
+            bindChk('kit_vent', rsiData.kit, 'vent');
+
+            // Drugs
+            document.getElementById('drugs_given').addEventListener('input', e => { rsiData.drugs.given = e.target.value; updateNote(); });
+            bindChk('mon_iv', rsiData.drugs, 'iv');
+            bindChk('mon_obs', rsiData.drugs, 'obs');
+
+            // Procedure
+            document.getElementById('btn-induction-time').addEventListener('click', e => {
+                const now = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+                rsiData.procedure.time = now;
+                document.getElementById('display_induction_time').innerText = now;
+                e.target.classList.add('opacity-50', 'cursor-not-allowed');
+                updateNote();
+            });
+            document.querySelectorAll('input[name="cl_grade"]').forEach(r => r.addEventListener('change', e => { rsiData.procedure.grade = e.target.value; updateNote(); }));
+            document.getElementById('tube_size').addEventListener('input', e => { rsiData.procedure.size = e.target.value; updateNote(); });
+            document.getElementById('tube_length').addEventListener('input', e => { rsiData.procedure.length = e.target.value; updateNote(); });
+            bindChk('conf_vis', rsiData.procedure, 'vis');
+            bindChk('conf_etco2', rsiData.procedure, 'etco2');
+            bindChk('conf_ausc', rsiData.procedure, 'ausc');
+
+            // Failed Airway
+            document.getElementById('failed_airway').addEventListener('change', e => {
+                rsiData.procedure.failed = e.target.checked;
+                document.getElementById('failed_airway_details').classList.toggle('hidden', !e.target.checked);
+                updateNote();
+            });
+            bindChk('plan_a_fail', rsiData.procedure, 'planA');
+            bindChk('plan_b_used', rsiData.procedure, 'planB');
+            bindChk('plan_c_used', rsiData.procedure, 'planC');
+            bindChk('plan_d_used', rsiData.procedure, 'planD');
+
+            // Post
+            document.getElementById('vent_mode').addEventListener('input', e => { rsiData.post.mode = e.target.value; updateNote(); });
+            document.getElementById('vent_tv').addEventListener('input', e => { rsiData.post.tv = e.target.value; updateNote(); });
+            document.getElementById('vent_rr').addEventListener('input', e => { rsiData.post.rr = e.target.value; updateNote(); });
+            document.getElementById('vent_peep').addEventListener('input', e => { rsiData.post.peep = e.target.value; updateNote(); });
+            document.getElementById('vent_fio2').addEventListener('input', e => { rsiData.post.fio2 = e.target.value; updateNote(); });
+            document.getElementById('post_sedation').addEventListener('input', e => { rsiData.post.sedation = e.target.value; updateNote(); });
+
+
+            // Copy Function
+            document.getElementById('copyNote').addEventListener('click', async () => {
+                const el = document.getElementById('rsiNoteOutput');
+                try {
+                    const htmlBlob = new Blob([el.innerHTML], { type: 'text/html' });
+                    const textBlob = new Blob([el.innerText], { type: 'text/plain' });
+                    await navigator.clipboard.write([
+                        new ClipboardItem({ 'text/html': htmlBlob, 'text/plain': textBlob })
+                    ]);
+                    const btn = document.getElementById('copyNote');
+                    const orig = btn.innerText;
+                    btn.innerText = '✅ Copied!';
+                    btn.classList.replace('bg-blue-600', 'bg-green-600');
+                    setTimeout(() => {
+                        btn.innerText = orig;
+                        btn.classList.replace('bg-green-600', 'bg-blue-600');
+                    }, 2000);
+                } catch (err) { alert("Copy failed."); }
+            });
+
+            // Reset
+            document.getElementById('resetData').addEventListener('click', () => {
+                if(confirm('Clear all data?')) {
+                    localStorage.removeItem('wmebem_rsi_data');
+                    location.reload();
+                }
+            });
+
+            loadState();
+        });
+    </script>
+</body>
+</html>
