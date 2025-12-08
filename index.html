@@ -67,6 +67,14 @@
         .card-yellow { border-left: 8px solid #eab308; }
         .card-blue { border-left: 8px solid #2563eb; }
 
+        /* Custom Checkbox for Airway Grid */
+        .airway-chk:checked + span {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border-color: #fca5a5;
+            font-weight: bold;
+        }
+
     </style>
 </head>
 <body class="bg-slate-100 text-slate-900 antialiased pb-10">
@@ -76,7 +84,7 @@
             <div class="flex items-center gap-4">
                 <img src="https://iili.io/KGQOvkl.md.png" alt="WMEBEM Logo" class="h-16 md:h-20 w-auto object-contain">
                 <div>
-                    <h1 class="text-xl md:text-2xl font-black text-slate-900 leading-tight">ED RSI Tool <span class="text-xs font-normal text-slate-500 bg-slate-100 px-2 py-0.5 rounded border ml-2">v1.0</span></h1>
+                    <h1 class="text-xl md:text-2xl font-black text-slate-900 leading-tight">ED RSI Tool <span class="text-xs font-normal text-slate-500 bg-slate-100 px-2 py-0.5 rounded border ml-2">v1.2</span></h1>
                     <p class="text-xs text-green-600 font-bold flex items-center gap-1" id="saveStatus">
                         <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Auto-save enabled
                     </p>
@@ -95,8 +103,10 @@
     <main class="container mx-auto px-4 py-6">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             
+            <!-- INPUT COLUMN -->
             <div class="lg:col-span-7 xl:col-span-8 flex flex-col space-y-6">
 
+                <!-- 1. PATIENT & ROLES -->
                 <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-400 card-blue">
                     <h2 class="text-xl font-black text-slate-800 mb-4 border-b border-slate-200 pb-2">1. Team & Patient</h2>
                     
@@ -112,7 +122,7 @@
                         </div>
                     </div>
 
-                    <div class="bg-slate-50 p-3 rounded border border-slate-300">
+                    <div class="bg-slate-50 p-3 rounded border border-slate-300 mb-2">
                         <span class="text-xs font-black text-slate-500 uppercase block mb-2">Role Allocation</span>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             <label class="flex items-center space-x-2"><input type="checkbox" class="role-chk rounded text-blue-600" value="Team Leader / Intubator" checked><span class="text-sm font-bold">RSI Lead/Intubator</span></label>
@@ -122,22 +132,79 @@
                             <label class="flex items-center space-x-2"><input type="checkbox" class="role-chk rounded text-blue-600" value="MILS Admin"><span class="text-sm font-medium">MILS Administrator</span></label>
                         </div>
                     </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                         <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Consultant</label>
+                            <input type="text" id="consultant_name" class="w-full px-3 py-2 border border-slate-300 rounded text-sm" placeholder="Name">
+                         </div>
+                         <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Status</label>
+                            <select id="consultant_status" class="w-full px-3 py-2 border border-slate-300 rounded text-sm bg-white">
+                                <option value="Present">Present in Room</option>
+                                <option value="Aware">Aware / Fast Bleep</option>
+                            </select>
+                         </div>
+                    </div>
                 </section>
 
+                <!-- 2. CHECKLIST PHASE -->
                 <div id="sec-prep"><h2 class="text-2xl font-black text-slate-900 border-b-4 border-slate-900 pb-2">Preparation Phase</h2></div>
 
+                <!-- RED BOX: LEAD -->
                 <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-400 card-red">
                     <h3 class="text-lg font-black text-red-700 mb-3 uppercase">Lead / Intubator Actions</h3>
                     
                     <div class="mb-4">
-                        <span class="text-xs font-black text-slate-600 uppercase block mb-2">Airway Assessment</span>
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                             <label class="cursor-pointer text-center"><input type="checkbox" class="sr-only toggle-chk" id="check_moans"><div class="py-1 px-2 border rounded text-xs font-bold transition">MOANS (Mask)</div></label>
-                             <label class="cursor-pointer text-center"><input type="checkbox" class="sr-only toggle-chk" id="check_rods"><div class="py-1 px-2 border rounded text-xs font-bold transition">RODS (SGA)</div></label>
-                             <label class="cursor-pointer text-center"><input type="checkbox" class="sr-only toggle-chk" id="check_lemon"><div class="py-1 px-2 border rounded text-xs font-bold transition">LEMON (Laryng)</div></label>
-                             <label class="cursor-pointer text-center"><input type="checkbox" class="sr-only toggle-chk" id="check_short"><div class="py-1 px-2 border rounded text-xs font-bold transition">SHORT (Surgical)</div></label>
+                        <span class="text-xs font-black text-slate-600 uppercase block mb-2">Detailed Airway Assessment</span>
+                        <div class="space-y-3 bg-red-50 p-3 rounded border border-red-100">
+                            
+                            <!-- MOANS -->
+                            <div>
+                                <span class="text-[10px] font-black text-red-800 uppercase block mb-1">MOANS (Difficult Mask)</span>
+                                <div class="flex flex-wrap gap-2">
+                                    <label class="cursor-pointer"><input type="checkbox" class="hidden airway-chk" value="Mask Seal"><span class="px-2 py-1 bg-white border border-slate-300 rounded text-xs text-slate-600 transition">Mask Seal</span></label>
+                                    <label class="cursor-pointer"><input type="checkbox" class="hidden airway-chk" value="Obesity/Obstruction"><span class="px-2 py-1 bg-white border border-slate-300 rounded text-xs text-slate-600 transition">Obesity/Obs</span></label>
+                                    <label class="cursor-pointer"><input type="checkbox" class="hidden airway-chk" value="Age > 55"><span class="px-2 py-1 bg-white border border-slate-300 rounded text-xs text-slate-600 transition">Age > 55</span></label>
+                                    <label class="cursor-pointer"><input type="checkbox" class="hidden airway-chk" value="No Teeth"><span class="px-2 py-1 bg-white border border-slate-300 rounded text-xs text-slate-600 transition">No Teeth</span></label>
+                                    <label class="cursor-pointer"><input type="checkbox" class="hidden airway-chk" value="Stiff Lungs"><span class="px-2 py-1 bg-white border border-slate-300 rounded text-xs text-slate-600 transition">Stiff Lungs</span></label>
+                                </div>
+                            </div>
+
+                            <!-- RODS -->
+                            <div>
+                                <span class="text-[10px] font-black text-red-800 uppercase block mb-1">RODS (Difficult SGA)</span>
+                                <div class="flex flex-wrap gap-2">
+                                    <label class="cursor-pointer"><input type="checkbox" class="hidden airway-chk" value="Restricted Opening"><span class="px-2 py-1 bg-white border border-slate-300 rounded text-xs text-slate-600 transition">Restricted Opening</span></label>
+                                    <label class="cursor-pointer"><input type="checkbox" class="hidden airway-chk" value="Obstruction"><span class="px-2 py-1 bg-white border border-slate-300 rounded text-xs text-slate-600 transition">Obstruction</span></label>
+                                    <label class="cursor-pointer"><input type="checkbox" class="hidden airway-chk" value="Distorted Anatomy"><span class="px-2 py-1 bg-white border border-slate-300 rounded text-xs text-slate-600 transition">Distorted Anatomy</span></label>
+                                </div>
+                            </div>
+
+                            <!-- LEMON -->
+                            <div>
+                                <span class="text-[10px] font-black text-red-800 uppercase block mb-1">LEMON (Difficult Laryngoscopy)</span>
+                                <div class="flex flex-wrap gap-2">
+                                    <label class="cursor-pointer"><input type="checkbox" class="hidden airway-chk" value="Look Externally"><span class="px-2 py-1 bg-white border border-slate-300 rounded text-xs text-slate-600 transition">Look External</span></label>
+                                    <label class="cursor-pointer"><input type="checkbox" class="hidden airway-chk" value="Evaluate 3-3-2"><span class="px-2 py-1 bg-white border border-slate-300 rounded text-xs text-slate-600 transition">Eval 3-3-2</span></label>
+                                    <label class="cursor-pointer"><input type="checkbox" class="hidden airway-chk" value="Mallampati > 3"><span class="px-2 py-1 bg-white border border-slate-300 rounded text-xs text-slate-600 transition">Mallampati >3</span></label>
+                                    <label class="cursor-pointer"><input type="checkbox" class="hidden airway-chk" value="Neck Pathology"><span class="px-2 py-1 bg-white border border-slate-300 rounded text-xs text-slate-600 transition">Neck Pathology</span></label>
+                                </div>
+                            </div>
+
+                            <!-- SHORT -->
+                             <div>
+                                <span class="text-[10px] font-black text-red-800 uppercase block mb-1">SHORT (Difficult Surgical)</span>
+                                <div class="flex flex-wrap gap-2">
+                                    <label class="cursor-pointer"><input type="checkbox" class="hidden airway-chk" value="Surgery/Scarring"><span class="px-2 py-1 bg-white border border-slate-300 rounded text-xs text-slate-600 transition">Surgery/Scar</span></label>
+                                    <label class="cursor-pointer"><input type="checkbox" class="hidden airway-chk" value="Haematoma"><span class="px-2 py-1 bg-white border border-slate-300 rounded text-xs text-slate-600 transition">Haematoma</span></label>
+                                    <label class="cursor-pointer"><input type="checkbox" class="hidden airway-chk" value="Obesity (Neck)"><span class="px-2 py-1 bg-white border border-slate-300 rounded text-xs text-slate-600 transition">Obesity</span></label>
+                                    <label class="cursor-pointer"><input type="checkbox" class="hidden airway-chk" value="Radiotherapy"><span class="px-2 py-1 bg-white border border-slate-300 rounded text-xs text-slate-600 transition">Radiotherapy</span></label>
+                                    <label class="cursor-pointer"><input type="checkbox" class="hidden airway-chk" value="Tumour"><span class="px-2 py-1 bg-white border border-slate-300 rounded text-xs text-slate-600 transition">Tumour</span></label>
+                                </div>
+                            </div>
                         </div>
-                        <textarea id="assessment_notes" rows="1" class="w-full mt-2 px-2 py-1 border border-slate-300 rounded text-sm" placeholder="Assessment positives/notes..."></textarea>
+                        <textarea id="assessment_notes" rows="1" class="w-full mt-2 px-2 py-1 border border-slate-300 rounded text-sm" placeholder="Additional assessment notes..."></textarea>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -155,6 +222,7 @@
                     </div>
                 </section>
 
+                <!-- ORANGE BOX: ASSISTANT -->
                 <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-400 card-orange">
                     <h3 class="text-lg font-black text-orange-600 mb-3 uppercase">Assistant Actions</h3>
                     <div class="grid grid-cols-2 gap-y-2 gap-x-4">
@@ -167,18 +235,47 @@
                     </div>
                 </section>
 
+                <!-- YELLOW BOX: DRUGS -->
                 <section id="sec-drugs" class="bg-white p-5 rounded-xl shadow-sm border border-slate-400 card-yellow">
                     <h3 class="text-lg font-black text-yellow-600 mb-3 uppercase">Drugs & Monitoring</h3>
                     
                     <div class="bg-yellow-50 p-3 rounded border border-yellow-200 mb-4">
                         <div class="flex justify-between items-center mb-2">
-                             <span class="text-xs font-black text-slate-700 uppercase">Dose Calculator (Check Protocol)</span>
+                             <span class="text-xs font-black text-slate-700 uppercase">Induction Agent Selection</span>
                         </div>
+                        
+                        <!-- Agent Selection -->
+                        <div class="flex gap-4 mb-3">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="induction_agent" value="Ketamine" checked class="text-yellow-600 focus:ring-yellow-500">
+                                <span class="font-bold text-sm">Ketamine (Default)</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="induction_agent" value="Propofol" class="text-red-600 focus:ring-red-500">
+                                <span class="font-bold text-sm text-red-700">Propofol (Deviation)</span>
+                            </label>
+                        </div>
+                        
+                        <!-- Co-Induction -->
+                        <div class="mb-3">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" id="use_fentanyl" class="text-red-600 focus:ring-red-500 rounded">
+                                <span class="font-bold text-sm text-red-700">Add Fentanyl (Deviation)</span>
+                            </label>
+                        </div>
+
+                        <!-- Deviation Box -->
+                        <div id="deviation_box" class="hidden bg-red-100 border-l-4 border-red-600 p-3 mb-3">
+                            <p class="text-xs font-black text-red-800 uppercase mb-1">⚠️ Guideline Deviation Required</p>
+                            <p class="text-xs text-red-700 mb-2">You are using non-standard drugs (Propofol/Fentanyl). Please justify.</p>
+                            <input type="text" id="deviation_reason" class="w-full px-2 py-1 border border-red-300 rounded text-sm" placeholder="Reason (e.g. HTN, high ICP, allergy)...">
+                        </div>
+
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <div class="bg-white p-2 rounded border border-yellow-300">
-                                <span class="block text-[10px] text-slate-500 font-bold uppercase">Ketamine (2mg/kg)</span>
-                                <span id="calc_ket" class="text-lg font-black text-slate-900">- mg</span>
-                                <span id="vol_ket" class="text-xs text-slate-500 block">(- ml @ 10mg/ml)</span>
+                                <span class="block text-[10px] text-slate-500 font-bold uppercase" id="lbl_agent">Ketamine (2mg/kg)</span>
+                                <span id="calc_agent" class="text-lg font-black text-slate-900">- mg</span>
+                                <span id="vol_agent" class="text-xs text-slate-500 block">(- ml)</span>
                             </div>
                             <div class="bg-white p-2 rounded border border-yellow-300">
                                 <span class="block text-[10px] text-slate-500 font-bold uppercase">Rocuronium (1.2mg/kg)</span>
@@ -196,7 +293,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3">
                          <div>
                              <span class="text-xs font-black text-slate-600 uppercase block mb-1">Drugs Prepared</span>
-                             <input type="text" id="drugs_given" class="w-full px-3 py-2 border border-slate-300 rounded text-sm font-medium" placeholder="e.g. Ketamine 150mg, Roc 100mg">
+                             <input type="text" id="drugs_given" class="w-full px-3 py-2 border border-slate-300 rounded text-sm font-medium" placeholder="Confirm doses prepared...">
                          </div>
                          <div>
                             <span class="text-xs font-black text-slate-600 uppercase block mb-1">Access & Monitor</span>
@@ -208,6 +305,7 @@
                     </div>
                 </section>
 
+                <!-- 3. PROCEDURE -->
                 <div id="sec-proc"><h2 class="text-2xl font-black text-slate-900 border-b-4 border-slate-900 pb-2">Procedure</h2></div>
 
                 <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-400">
@@ -221,34 +319,45 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-5">
-                        <div>
-                            <span class="text-xs font-black text-slate-600 uppercase block mb-2">Laryngoscopy Grade (C&L)</span>
-                            <div class="flex gap-2">
-                                <label class="cursor-pointer flex-1"><input type="radio" name="cl_grade" value="1" class="sr-only toggle-chk"><div class="text-center py-2 border rounded font-bold transition">1</div></label>
-                                <label class="cursor-pointer flex-1"><input type="radio" name="cl_grade" value="2" class="sr-only toggle-chk"><div class="text-center py-2 border rounded font-bold transition">2</div></label>
-                                <label class="cursor-pointer flex-1"><input type="radio" name="cl_grade" value="3" class="sr-only toggle-chk"><div class="text-center py-2 border rounded font-bold transition">3</div></label>
-                                <label class="cursor-pointer flex-1"><input type="radio" name="cl_grade" value="4" class="sr-only toggle-chk"><div class="text-center py-2 border rounded font-bold transition">4</div></label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-5">
+                        <div class="space-y-4">
+                            <div>
+                                <span class="text-xs font-black text-slate-600 uppercase block mb-2">Device Used</span>
+                                <select id="device_type" class="w-full px-3 py-2 border border-slate-300 rounded text-sm font-bold bg-white">
+                                    <option value="Direct Laryngoscopy (Mac)">Direct Laryngoscopy (Mac)</option>
+                                    <option value="Video - Standard Geometry">Video - Standard Geometry</option>
+                                    <option value="Video - Hyperangulated">Video - Hyperangulated</option>
+                                </select>
+                            </div>
+                            <div>
+                                <span class="text-xs font-black text-slate-600 uppercase block mb-2">View (C&L Grade)</span>
+                                <div class="flex gap-2">
+                                    <label class="cursor-pointer flex-1"><input type="radio" name="cl_grade" value="1" class="sr-only toggle-chk"><div class="text-center py-2 border rounded font-bold transition">1</div></label>
+                                    <label class="cursor-pointer flex-1"><input type="radio" name="cl_grade" value="2" class="sr-only toggle-chk"><div class="text-center py-2 border rounded font-bold transition">2</div></label>
+                                    <label class="cursor-pointer flex-1"><input type="radio" name="cl_grade" value="3" class="sr-only toggle-chk"><div class="text-center py-2 border rounded font-bold transition">3</div></label>
+                                    <label class="cursor-pointer flex-1"><input type="radio" name="cl_grade" value="4" class="sr-only toggle-chk"><div class="text-center py-2 border rounded font-bold transition">4</div></label>
+                                </div>
                             </div>
                         </div>
                         <div>
                              <span class="text-xs font-black text-slate-600 uppercase block mb-2">Tube Details</span>
-                             <div class="flex gap-2">
+                             <div class="flex gap-2 mb-2">
                                  <input type="text" id="tube_size" class="w-1/2 px-3 py-2 border border-slate-300 rounded text-sm font-bold" placeholder="Size (e.g. 8.0)">
                                  <input type="text" id="tube_length" class="w-1/2 px-3 py-2 border border-slate-300 rounded text-sm font-bold" placeholder="Length (@ teeth)">
                              </div>
+                             <div class="bg-green-50 p-3 rounded border border-green-200">
+                                <h4 class="text-[10px] font-black text-green-800 uppercase mb-1">Confirmation</h4>
+                                <div class="space-y-1">
+                                     <label class="flex items-center space-x-2"><input type="checkbox" id="conf_vis" class="rounded text-green-600"><span class="text-xs font-medium">Visualisation (Cords)</span></label>
+                                     <label class="flex items-center space-x-2"><input type="checkbox" id="conf_etco2" class="rounded text-green-600"><span class="text-xs font-bold">Waveform Capnography</span></label>
+                                     <label class="flex items-center space-x-2"><input type="checkbox" id="conf_ausc" class="rounded text-green-600"><span class="text-xs font-medium">Auscultation</span></label>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="bg-green-50 p-4 rounded-xl border border-green-200 mb-5">
-                        <h4 class="text-sm font-black text-green-800 uppercase mb-2">Confirmation</h4>
-                        <div class="space-y-2">
-                             <label class="flex items-center space-x-2"><input type="checkbox" id="conf_vis" class="rounded text-green-600"><span class="text-sm font-medium">Visualisation (Cords)</span></label>
-                             <label class="flex items-center space-x-2"><input type="checkbox" id="conf_etco2" class="rounded text-green-600"><span class="text-sm font-bold">Waveform Capnography (Required)</span></label>
-                             <label class="flex items-center space-x-2"><input type="checkbox" id="conf_ausc" class="rounded text-green-600"><span class="text-sm font-medium">Auscultation (Equal AE)</span></label>
-                        </div>
-                    </div>
 
+                    <!-- FAILED AIRWAY SECTION -->
                     <div class="border-t border-slate-300 pt-4">
                         <label class="flex items-center space-x-2 cursor-pointer mb-2">
                             <input type="checkbox" id="failed_airway" class="w-5 h-5 text-red-600 rounded focus:ring-red-600">
@@ -265,6 +374,7 @@
                     </div>
                 </section>
 
+                <!-- 4. POST RSI -->
                 <div id="sec-post"><h2 class="text-2xl font-black text-slate-900 border-b-4 border-slate-900 pb-2">Post-RSI Care</h2></div>
 
                 <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-400">
@@ -287,6 +397,7 @@
                 </footer>
             </div>
 
+            <!-- OUTPUT COLUMN (STICKY) -->
             <div class="lg:col-span-5 xl:col-span-4 relative">
                 <div class="sticky top-24 space-y-6">
                     <section class="bg-white p-4 rounded-xl shadow-lg border border-slate-300">
@@ -309,19 +420,25 @@
             let rsiData = {
                 weight: '',
                 indication: '',
+                consultant: { name: '', status: 'Present' },
                 roles: ['Team Leader / Intubator', 'Intubation Assistant', 'Drug Admin / Vitals'],
                 prep: {
-                    moans: false, rods: false, lemon: false, short: false, notes: '',
+                    factors: [],
+                    notes: '',
                     pos: false, preox: false, fluids: false,
                     briefComplete: false, briefPlan: false
                 },
                 kit: { laryngo: false, ett: false, bougie: false, suction: false, circuit: false, vent: false },
                 drugs: {
+                    agent: 'Ketamine',
+                    useFentanyl: false,
+                    deviationReason: '',
                     given: '',
                     iv: false, obs: false
                 },
                 procedure: {
                     time: '',
+                    device: 'Direct Laryngoscopy (Mac)',
                     grade: '',
                     size: '', length: '',
                     vis: false, etco2: false, ausc: false,
@@ -334,18 +451,19 @@
 
             // --- LOCAL STORAGE ---
             function saveState() {
-                localStorage.setItem('wmebem_rsi_data', JSON.stringify(rsiData));
+                localStorage.setItem('wmebem_rsi_data_v2', JSON.stringify(rsiData));
             }
 
             function loadState() {
-                const saved = localStorage.getItem('wmebem_rsi_data');
+                const saved = localStorage.getItem('wmebem_rsi_data_v2');
                 if (saved) {
                     try {
                         const parsed = JSON.parse(saved);
-                        rsiData = { ...rsiData, ...parsed }; // Merge to ensure structure integrity
-                        restoreUI();
+                        // Deep merge basic hack
+                        rsiData = { ...rsiData, ...parsed, consultant: {...rsiData.consultant || {}, ...parsed.consultant}, drugs: {...rsiData.drugs || {}, ...parsed.drugs} }; 
                     } catch (e) { console.error("Error loading save data", e); }
                 }
+                restoreUI();
             }
 
             function restoreUI() {
@@ -355,18 +473,18 @@
 
                 setVal('weight', d.weight);
                 setVal('indication', d.indication);
-                updateCalc(d.weight);
+                setVal('consultant_name', d.consultant.name);
+                setVal('consultant_status', d.consultant.status);
 
                 // Roles
                 document.querySelectorAll('.role-chk').forEach(chk => {
                     chk.checked = d.roles.includes(chk.value);
                 });
 
-                // Prep
-                setCheck('check_moans', d.prep.moans);
-                setCheck('check_rods', d.prep.rods);
-                setCheck('check_lemon', d.prep.lemon);
-                setCheck('check_short', d.prep.short);
+                // Airway Factors
+                document.querySelectorAll('.airway-chk').forEach(chk => {
+                    chk.checked = d.prep.factors.includes(chk.value);
+                });
                 setVal('assessment_notes', d.prep.notes);
                 setCheck('opt_pos', d.prep.pos);
                 setCheck('opt_preox', d.prep.preox);
@@ -383,6 +501,13 @@
                 setCheck('kit_vent', d.kit.vent);
 
                 // Drugs
+                const rAgent = document.querySelector(`input[name="induction_agent"][value="${d.drugs.agent}"]`);
+                if(rAgent) rAgent.checked = true;
+                setCheck('use_fentanyl', d.drugs.useFentanyl);
+                setVal('deviation_reason', d.drugs.deviationReason);
+                updateDeviationVisibility();
+                updateCalc(d.weight); // Recalc with loaded agent
+
                 setVal('drugs_given', d.drugs.given);
                 setCheck('mon_iv', d.drugs.iv);
                 setCheck('mon_obs', d.drugs.obs);
@@ -392,6 +517,7 @@
                     document.getElementById('display_induction_time').innerText = d.procedure.time;
                     document.getElementById('btn-induction-time').classList.add('opacity-50', 'cursor-not-allowed');
                 }
+                setVal('device_type', d.procedure.device);
                 if(d.procedure.grade) {
                     const r = document.querySelector(`input[name="cl_grade"][value="${d.procedure.grade}"]`);
                     if(r) r.checked = true;
@@ -420,15 +546,50 @@
                 updateNote();
             }
 
-            // --- CALCULATOR ---
+            // --- CALCULATOR & DRUG LOGIC ---
+            function updateDeviationVisibility() {
+                const isPropofol = rsiData.drugs.agent === 'Propofol';
+                const hasFentanyl = rsiData.drugs.useFentanyl;
+                const devBox = document.getElementById('deviation_box');
+                
+                if (isPropofol || hasFentanyl) {
+                    devBox.classList.remove('hidden');
+                } else {
+                    devBox.classList.add('hidden');
+                }
+            }
+
             function updateCalc(w) {
                 const kg = parseFloat(w);
+                const agent = rsiData.drugs.agent;
+                
+                // Update Label
+                const lblAgent = document.getElementById('lbl_agent');
+                const calcAgent = document.getElementById('calc_agent');
+                const volAgent = document.getElementById('vol_agent');
+
+                if (agent === 'Ketamine') {
+                    lblAgent.innerText = 'Ketamine (2mg/kg)';
+                } else {
+                    lblAgent.innerText = 'Propofol (1.5mg/kg)';
+                }
+
                 if(!isNaN(kg) && kg > 0) {
-                    // Ketamine 2mg/kg (10mg/ml)
-                    const ketDose = Math.round(kg * 2);
-                    const ketVol = (ketDose / 10).toFixed(1);
-                    document.getElementById('calc_ket').innerText = `${ketDose} mg`;
-                    document.getElementById('vol_ket').innerText = `(${ketVol} ml @ 10mg/ml)`;
+                    // Agent Calc
+                    let dose, vol, conc;
+                    if (agent === 'Ketamine') {
+                        dose = Math.round(kg * 2);
+                        conc = 10;
+                        vol = (dose / conc).toFixed(1);
+                        volAgent.innerText = `(${vol} ml @ 10mg/ml)`;
+                    } else {
+                        // Propofol ~1.5mg/kg usually 10mg/ml
+                        dose = Math.round(kg * 1.5);
+                        conc = 10;
+                        vol = (dose / conc).toFixed(1);
+                        volAgent.innerText = `(${vol} ml @ 10mg/ml)`;
+                    }
+                    calcAgent.innerText = `${dose} mg`;
 
                     // Rocuronium 1.2mg/kg (10mg/ml)
                     const rocDose = Math.round(kg * 1.2);
@@ -436,15 +597,15 @@
                     document.getElementById('calc_roc').innerText = `${rocDose} mg`;
                     document.getElementById('vol_roc').innerText = `(${rocVol} ml @ 10mg/ml)`;
 
-                    // Update TV suggestion placeholder
+                    // TV
                     const tvMin = Math.round(kg * 6);
                     const tvMax = Math.round(kg * 8);
                     document.getElementById('vent_tv').placeholder = `${tvMin}-${tvMax} ml`;
                 } else {
-                    document.getElementById('calc_ket').innerText = `- mg`;
-                    document.getElementById('vol_ket').innerText = `(- ml @ 10mg/ml)`;
+                    calcAgent.innerText = `- mg`;
+                    volAgent.innerText = `(- ml)`;
                     document.getElementById('calc_roc').innerText = `- mg`;
-                    document.getElementById('vol_roc').innerText = `(- ml @ 10mg/ml)`;
+                    document.getElementById('vol_roc').innerText = `(- ml)`;
                 }
             }
 
@@ -457,17 +618,22 @@
                 h += `<strong>Indication:</strong> ${d.indication || 'Not specified'}.<br>`;
                 if(d.weight) h += `Patient Weight: ${d.weight} kg.<br>`;
                 
+                // Consultant
+                if(d.consultant.name) {
+                    h += `<strong>Consultant:</strong> ${d.consultant.name} (${d.consultant.status}).<br>`;
+                }
+
                 // Team
                 if(d.roles.length) h += `<strong>Team:</strong> ${d.roles.join(', ')}.<br>`;
                 
                 // Prep
                 h += `<br><strong>Preparation (Checklist Complete):</strong><br>`;
-                let assess = [];
-                if(d.prep.moans) assess.push('MOANS');
-                if(d.prep.rods) assess.push('RODS');
-                if(d.prep.lemon) assess.push('LEMON');
-                if(d.prep.short) assess.push('SHORT');
-                if(assess.length) h += `- Airway Assessment: ${assess.join(', ')} checked. `;
+                
+                if(d.prep.factors.length > 0) {
+                    h += `- Airway Assessment (Positives): ${d.prep.factors.join(', ')}. `;
+                } else {
+                    h += `- Airway Assessment: No specific difficult airway factors anticipated. `;
+                }
                 if(d.prep.notes) h += `(${d.prep.notes})`;
                 h+= `<br>`;
                 
@@ -483,10 +649,17 @@
                 h += `- Access & Monitoring: ${d.drugs.iv ? '2x IV/IO confirmed' : 'Access unchecked'}, ${d.drugs.obs ? 'Full monitoring attached' : 'Monitoring unchecked'}.<br>`;
                 if(d.drugs.given) h += `<strong>Drugs Administered:</strong> ${d.drugs.given}.<br>`;
 
+                // Deviation Note
+                if (d.drugs.agent === 'Propofol' || d.drugs.useFentanyl) {
+                    h += `<strong>NOTE:</strong> Non-standard induction agents used. Justification: ${d.drugs.deviationReason || 'None documented'}.<br>`;
+                }
+
                 // Procedure
                 h += `<br><strong>Procedure:</strong><br>`;
                 if(d.procedure.time) h += `Induction Time: ${d.procedure.time}<br>`;
                 
+                h += `Device: <strong>${d.procedure.device}</strong>.<br>`;
+
                 if(d.procedure.grade || d.procedure.size) {
                     h += `Laryngoscopy: Grade ${d.procedure.grade || '-'}. Tube Size: ${d.procedure.size || '-'} mm ID (Length: ${d.procedure.length || '-'} cm @ teeth).<br>`;
                 }
@@ -518,13 +691,15 @@
 
             // --- EVENT LISTENERS ---
             
-            // Weight
+            // Weight & Consultant
             document.getElementById('weight').addEventListener('input', e => {
                 rsiData.weight = e.target.value;
                 updateCalc(e.target.value);
                 updateNote();
             });
             document.getElementById('indication').addEventListener('input', e => { rsiData.indication = e.target.value; updateNote(); });
+            document.getElementById('consultant_name').addEventListener('input', e => { rsiData.consultant.name = e.target.value; updateNote(); });
+            document.getElementById('consultant_status').addEventListener('change', e => { rsiData.consultant.status = e.target.value; updateNote(); });
 
             // Roles
             document.querySelectorAll('.role-chk').forEach(chk => chk.addEventListener('change', e => {
@@ -533,20 +708,21 @@
                 updateNote();
             }));
 
-            // Checkbox Binder helper
+            // Airway Checks
+            document.querySelectorAll('.airway-chk').forEach(chk => chk.addEventListener('change', e => {
+                if(e.target.checked) rsiData.prep.factors.push(e.target.value);
+                else rsiData.prep.factors = rsiData.prep.factors.filter(x => x !== e.target.value);
+                updateNote();
+            }));
+            document.getElementById('assessment_notes').addEventListener('input', e => { rsiData.prep.notes = e.target.value; updateNote(); });
+
+            // Optimization
             const bindChk = (id, obj, key) => {
                 document.getElementById(id).addEventListener('change', e => {
                     obj[key] = e.target.checked;
                     updateNote();
                 });
             };
-
-            // Prep
-            bindChk('check_moans', rsiData.prep, 'moans');
-            bindChk('check_rods', rsiData.prep, 'rods');
-            bindChk('check_lemon', rsiData.prep, 'lemon');
-            bindChk('check_short', rsiData.prep, 'short');
-            document.getElementById('assessment_notes').addEventListener('input', e => { rsiData.prep.notes = e.target.value; updateNote(); });
             bindChk('opt_pos', rsiData.prep, 'pos');
             bindChk('opt_preox', rsiData.prep, 'preox');
             bindChk('opt_fluids', rsiData.prep, 'fluids');
@@ -562,6 +738,19 @@
             bindChk('kit_vent', rsiData.kit, 'vent');
 
             // Drugs
+            document.querySelectorAll('input[name="induction_agent"]').forEach(r => r.addEventListener('change', e => {
+                rsiData.drugs.agent = e.target.value;
+                updateDeviationVisibility();
+                updateCalc(rsiData.weight);
+                updateNote();
+            }));
+            document.getElementById('use_fentanyl').addEventListener('change', e => {
+                rsiData.drugs.useFentanyl = e.target.checked;
+                updateDeviationVisibility();
+                updateNote();
+            });
+            document.getElementById('deviation_reason').addEventListener('input', e => { rsiData.drugs.deviationReason = e.target.value; updateNote(); });
+            
             document.getElementById('drugs_given').addEventListener('input', e => { rsiData.drugs.given = e.target.value; updateNote(); });
             bindChk('mon_iv', rsiData.drugs, 'iv');
             bindChk('mon_obs', rsiData.drugs, 'obs');
@@ -574,6 +763,7 @@
                 e.target.classList.add('opacity-50', 'cursor-not-allowed');
                 updateNote();
             });
+            document.getElementById('device_type').addEventListener('change', e => { rsiData.procedure.device = e.target.value; updateNote(); });
             document.querySelectorAll('input[name="cl_grade"]').forEach(r => r.addEventListener('change', e => { rsiData.procedure.grade = e.target.value; updateNote(); }));
             document.getElementById('tube_size').addEventListener('input', e => { rsiData.procedure.size = e.target.value; updateNote(); });
             document.getElementById('tube_length').addEventListener('input', e => { rsiData.procedure.length = e.target.value; updateNote(); });
@@ -624,7 +814,7 @@
             // Reset
             document.getElementById('resetData').addEventListener('click', () => {
                 if(confirm('Clear all data?')) {
-                    localStorage.removeItem('wmebem_rsi_data');
+                    localStorage.removeItem('wmebem_rsi_data_v2');
                     location.reload();
                 }
             });
