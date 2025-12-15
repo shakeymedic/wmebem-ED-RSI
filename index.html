@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WMEBEM RSI Documentation Tool</title>
+    <title>WMEBEM RSI Documentation Tool v2.0 (DAS 2025)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -82,9 +82,9 @@
     <header class="bg-white shadow-sm sticky top-0 z-50 border-b border-slate-300">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center gap-4">
-                <img src="https://iili.io/KGQOvkl.md.png" alt="WMEBEM Logo" class="h-16 md:h-20 w-auto object-contain">
+                <div class="h-12 w-12 bg-blue-800 rounded flex items-center justify-center text-white font-black text-xs">WMEBEM</div>
                 <div>
-                    <h1 class="text-xl md:text-2xl font-black text-slate-900 leading-tight">ED RSI Tool <span class="text-xs font-normal text-slate-500 bg-slate-100 px-2 py-0.5 rounded border ml-2">v1.2</span></h1>
+                    <h1 class="text-xl md:text-2xl font-black text-slate-900 leading-tight">ED RSI Tool <span class="text-xs font-normal text-slate-500 bg-slate-100 px-2 py-0.5 rounded border ml-2">v2.0 DAS</span></h1>
                     <p class="text-xs text-green-600 font-bold flex items-center gap-1" id="saveStatus">
                         <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Auto-save enabled
                     </p>
@@ -103,10 +103,8 @@
     <main class="container mx-auto px-4 py-6">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             
-            <!-- INPUT COLUMN -->
             <div class="lg:col-span-7 xl:col-span-8 flex flex-col space-y-6">
 
-                <!-- 1. PATIENT & ROLES -->
                 <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-400 card-blue">
                     <h2 class="text-xl font-black text-slate-800 mb-4 border-b border-slate-200 pb-2">1. Team & Patient</h2>
                     
@@ -148,10 +146,8 @@
                     </div>
                 </section>
 
-                <!-- 2. CHECKLIST PHASE -->
                 <div id="sec-prep"><h2 class="text-2xl font-black text-slate-900 border-b-4 border-slate-900 pb-2">Preparation Phase</h2></div>
 
-                <!-- RED BOX: LEAD -->
                 <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-400 card-red">
                     <h3 class="text-lg font-black text-red-700 mb-3 uppercase">Lead / Intubator Actions</h3>
                     
@@ -159,7 +155,6 @@
                         <span class="text-xs font-black text-slate-600 uppercase block mb-2">Detailed Airway Assessment</span>
                         <div class="space-y-3 bg-red-50 p-3 rounded border border-red-100">
                             
-                            <!-- MOANS -->
                             <div>
                                 <span class="text-[10px] font-black text-red-800 uppercase block mb-1">MOANS (Difficult Mask)</span>
                                 <div class="flex flex-wrap gap-2">
@@ -171,7 +166,6 @@
                                 </div>
                             </div>
 
-                            <!-- RODS -->
                             <div>
                                 <span class="text-[10px] font-black text-red-800 uppercase block mb-1">RODS (Difficult SGA)</span>
                                 <div class="flex flex-wrap gap-2">
@@ -181,7 +175,6 @@
                                 </div>
                             </div>
 
-                            <!-- LEMON -->
                             <div>
                                 <span class="text-[10px] font-black text-red-800 uppercase block mb-1">LEMON (Difficult Laryngoscopy)</span>
                                 <div class="flex flex-wrap gap-2">
@@ -192,8 +185,7 @@
                                 </div>
                             </div>
 
-                            <!-- SHORT -->
-                             <div>
+                            <div>
                                 <span class="text-[10px] font-black text-red-800 uppercase block mb-1">SHORT (Difficult Surgical)</span>
                                 <div class="flex flex-wrap gap-2">
                                     <label class="cursor-pointer"><input type="checkbox" class="hidden airway-chk" value="Surgery/Scarring"><span class="px-2 py-1 bg-white border border-slate-300 rounded text-xs text-slate-600 transition">Surgery/Scar</span></label>
@@ -222,7 +214,6 @@
                     </div>
                 </section>
 
-                <!-- ORANGE BOX: ASSISTANT -->
                 <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-400 card-orange">
                     <h3 class="text-lg font-black text-orange-600 mb-3 uppercase">Assistant Actions</h3>
                     <div class="grid grid-cols-2 gap-y-2 gap-x-4">
@@ -235,7 +226,6 @@
                     </div>
                 </section>
 
-                <!-- YELLOW BOX: DRUGS -->
                 <section id="sec-drugs" class="bg-white p-5 rounded-xl shadow-sm border border-slate-400 card-yellow">
                     <h3 class="text-lg font-black text-yellow-600 mb-3 uppercase">Drugs & Monitoring</h3>
                     
@@ -244,7 +234,6 @@
                              <span class="text-xs font-black text-slate-700 uppercase">Induction Agent Selection</span>
                         </div>
                         
-                        <!-- Agent Selection -->
                         <div class="flex gap-4 mb-3">
                             <label class="flex items-center space-x-2 cursor-pointer">
                                 <input type="radio" name="induction_agent" value="Ketamine" checked class="text-yellow-600 focus:ring-yellow-500">
@@ -256,7 +245,6 @@
                             </label>
                         </div>
                         
-                        <!-- Co-Induction -->
                         <div class="mb-3">
                             <label class="flex items-center space-x-2 cursor-pointer">
                                 <input type="checkbox" id="use_fentanyl" class="text-red-600 focus:ring-red-500 rounded">
@@ -264,7 +252,6 @@
                             </label>
                         </div>
 
-                        <!-- Deviation Box -->
                         <div id="deviation_box" class="hidden bg-red-100 border-l-4 border-red-600 p-3 mb-3">
                             <p class="text-xs font-black text-red-800 uppercase mb-1">⚠️ Guideline Deviation Required</p>
                             <p class="text-xs text-red-700 mb-2">You are using non-standard drugs (Propofol/Fentanyl). Please justify.</p>
@@ -305,7 +292,6 @@
                     </div>
                 </section>
 
-                <!-- 3. PROCEDURE -->
                 <div id="sec-proc"><h2 class="text-2xl font-black text-slate-900 border-b-4 border-slate-900 pb-2">Procedure</h2></div>
 
                 <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-400">
@@ -357,24 +343,95 @@
                     </div>
 
 
-                    <!-- FAILED AIRWAY SECTION -->
-                    <div class="border-t border-slate-300 pt-4">
-                        <label class="flex items-center space-x-2 cursor-pointer mb-2">
-                            <input type="checkbox" id="failed_airway" class="w-5 h-5 text-red-600 rounded focus:ring-red-600">
-                            <span class="font-black text-red-700 uppercase">⚠️ Failed Airway / Difficult Intubation</span>
-                        </label>
-                        <div id="failed_airway_details" class="hidden pl-7 space-y-2">
-                            <div class="grid grid-cols-2 gap-2">
-                                <label class="cursor-pointer text-center"><input type="checkbox" id="plan_a_fail" class="sr-only toggle-chk-red"><div class="py-1 px-2 border border-red-200 rounded text-xs font-bold transition">Plan A Failed (3 Attempts)</div></label>
-                                <label class="cursor-pointer text-center"><input type="checkbox" id="plan_b_used" class="sr-only toggle-chk-red"><div class="py-1 px-2 border border-red-200 rounded text-xs font-bold transition">Plan B (SGA/iGel) Used</div></label>
-                                <label class="cursor-pointer text-center"><input type="checkbox" id="plan_c_used" class="sr-only toggle-chk-red"><div class="py-1 px-2 border border-red-200 rounded text-xs font-bold transition">Plan C (Face Mask) Used</div></label>
-                                <label class="cursor-pointer text-center"><input type="checkbox" id="plan_d_used" class="sr-only toggle-chk-red"><div class="py-1 px-2 border border-red-200 rounded text-xs font-bold transition">Plan D (FONA) Required</div></label>
+                    <div class="border-t-4 border-red-600 pt-6 mt-6 bg-red-50 p-4 rounded-xl">
+                        <div class="flex justify-between items-center mb-4">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" id="failed_airway" class="w-6 h-6 text-red-600 rounded focus:ring-red-600">
+                                <span class="text-xl font-black text-red-700 uppercase">⚠️ Failed Airway / DAS Protocol</span>
+                            </label>
+                            <button id="toggleAlgoImages" class="text-xs bg-white border border-red-200 text-red-700 font-bold px-3 py-1 rounded shadow-sm hover:bg-red-100">
+                                📷 Show DAS Algorithms
+                            </button>
+                        </div>
+
+                        <div id="algoImages" class="hidden grid grid-cols-1 gap-4 mb-6 border-b-2 border-red-200 pb-4">
+                            <div class="bg-white p-2 rounded shadow">
+                                <h4 class="font-bold text-center text-slate-700 mb-1">Plan A</h4>
+                                <img src="das_plan_a.png" alt="DAS Plan A" class="w-full h-auto rounded">
+                            </div>
+                            <div class="bg-white p-2 rounded shadow">
+                                <h4 class="font-bold text-center text-slate-700 mb-1">Plan B/C/D</h4>
+                                <img src="das_plan_b_c_d.png" alt="DAS Plan B C D" class="w-full h-auto rounded">
                             </div>
                         </div>
+
+                        <div id="failed_airway_details" class="hidden space-y-4">
+                            
+                            <div class="bg-white p-3 rounded border-l-8 border-red-500 shadow-sm">
+                                <h4 class="font-black text-red-800 uppercase text-sm mb-2">Plan A: Tracheal Intubation (Max 3+1 Attempts)</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                                    <label class="flex items-center space-x-2"><input type="checkbox" id="das_opt_nmba" class="das-chk rounded text-red-500"><span class="font-medium">Full Neuromuscular Blockade</span></label>
+                                    <label class="flex items-center space-x-2"><input type="checkbox" id="das_opt_video" class="das-chk rounded text-red-500"><span class="font-medium">Videolaryngoscopy Used</span></label>
+                                    <label class="flex items-center space-x-2"><input type="checkbox" id="das_opt_elm" class="das-chk rounded text-red-500"><span class="font-medium">Ext. Laryngeal Manipulation / Remove Cricoid</span></label>
+                                    <label class="flex items-center space-x-2"><input type="checkbox" id="das_opt_bougie" class="das-chk rounded text-red-500"><span class="font-medium">Bougie / Stylet Used</span></label>
+                                </div>
+                                <div class="mt-3 pt-2 border-t border-red-100">
+                                    <label class="flex items-center space-x-2 cursor-pointer">
+                                        <input type="checkbox" id="plan_a_failed_confirm" class="w-5 h-5 text-red-700 rounded">
+                                        <span class="font-bold text-red-700">❌ Plan A FAILED (Declare Failed Intubation)</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div id="box_plan_b" class="hidden bg-white p-3 rounded border-l-8 border-orange-500 shadow-sm">
+                                <h4 class="font-black text-orange-700 uppercase text-sm mb-2">Plan B: SAD Rescue (Max 3 Attempts)</h4>
+                                <p class="text-xs text-slate-500 mb-2">Goal: Oxygenation. Use 2nd Gen Device.</p>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm mb-2">
+                                    <input type="text" id="das_sad_type" class="px-2 py-1 border rounded" placeholder="Device Used (e.g. iGel)">
+                                    <input type="text" id="das_sad_size" class="px-2 py-1 border rounded" placeholder="Size">
+                                </div>
+                                <label class="flex items-center space-x-2 mb-2"><input type="checkbox" id="das_sad_conf" class="das-chk rounded text-orange-500"><span class="font-bold text-sm">Ventilation Confirmed (CO2 + Visual)</span></label>
+                                
+                                <div class="mt-2 pt-2 border-t border-orange-100">
+                                    <label class="flex items-center space-x-2 cursor-pointer">
+                                        <input type="checkbox" id="plan_b_failed_confirm" class="w-5 h-5 text-orange-700 rounded">
+                                        <span class="font-bold text-orange-700">❌ Plan B FAILED (Declare Failed SAD)</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div id="box_plan_c" class="hidden bg-white p-3 rounded border-l-8 border-yellow-500 shadow-sm">
+                                <h4 class="font-black text-yellow-700 uppercase text-sm mb-2">Plan C: Facemask Ventilation</h4>
+                                <div class="grid grid-cols-1 gap-2 text-sm mb-2">
+                                    <label class="flex items-center space-x-2"><input type="checkbox" id="das_c_2person" class="das-chk rounded text-yellow-600"><span class="font-medium">Two-Person Technique</span></label>
+                                    <label class="flex items-center space-x-2"><input type="checkbox" id="das_c_adjuncts" class="das-chk rounded text-yellow-600"><span class="font-medium">Adjuncts (OPA/NPA)</span></label>
+                                </div>
+                                <div class="mt-2 pt-2 border-t border-yellow-100">
+                                    <label class="flex items-center space-x-2 cursor-pointer">
+                                        <input type="checkbox" id="plan_c_failed_confirm" class="w-5 h-5 text-yellow-700 rounded">
+                                        <span class="font-bold text-yellow-700">❌ Plan C FAILED (CICO - Declare Emergency)</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div id="box_plan_d" class="hidden bg-white p-3 rounded border-l-8 border-purple-600 shadow-sm">
+                                <h4 class="font-black text-purple-800 uppercase text-sm mb-2">Plan D: eFONA</h4>
+                                <div class="bg-purple-50 p-2 rounded border border-purple-200 mb-2">
+                                    <p class="text-sm font-bold text-purple-900">EQUIPMENT: Scalpel (Size 10), Bougie, Tube (6.0 mm)</p>
+                                </div>
+                                <div class="grid grid-cols-1 gap-2 text-sm">
+                                    <label class="flex items-center space-x-2"><input type="checkbox" id="das_d_neck" class="das-chk rounded text-purple-600"><span class="font-medium">Neck Extended</span></label>
+                                    <label class="flex items-center space-x-2"><input type="checkbox" id="das_d_inc" class="das-chk rounded text-purple-600"><span class="font-medium">Incision & Bougie Inserted</span></label>
+                                    <label class="flex items-center space-x-2"><input type="checkbox" id="das_d_tube" class="das-chk rounded text-purple-600"><span class="font-medium">Tube 6.0mm Railroaded</span></label>
+                                    <label class="flex items-center space-x-2"><input type="checkbox" id="das_d_conf" class="das-chk rounded text-purple-600"><span class="font-bold">Ventilation Confirmed</span></label>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
+
                 </section>
 
-                <!-- 4. POST RSI -->
                 <div id="sec-post"><h2 class="text-2xl font-black text-slate-900 border-b-4 border-slate-900 pb-2">Post-RSI Care</h2></div>
 
                 <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-400">
@@ -397,7 +454,6 @@
                 </footer>
             </div>
 
-            <!-- OUTPUT COLUMN (STICKY) -->
             <div class="lg:col-span-5 xl:col-span-4 relative">
                 <div class="sticky top-24 space-y-6">
                     <section class="bg-white p-4 rounded-xl shadow-lg border border-slate-300">
@@ -442,7 +498,9 @@
                     grade: '',
                     size: '', length: '',
                     vis: false, etco2: false, ausc: false,
-                    failed: false, planA: false, planB: false, planC: false, planD: false
+                    // DAS FLAGS
+                    failed: false, 
+                    planA: false, planB: false, planC: false, planD: false
                 },
                 post: {
                     mode: 'IPPV', tv: '', rr: '15', peep: '5', fio2: '1.0', sedation: ''
@@ -451,11 +509,11 @@
 
             // --- LOCAL STORAGE ---
             function saveState() {
-                localStorage.setItem('wmebem_rsi_data_v2', JSON.stringify(rsiData));
+                localStorage.setItem('wmebem_rsi_data_v3', JSON.stringify(rsiData));
             }
 
             function loadState() {
-                const saved = localStorage.getItem('wmebem_rsi_data_v2');
+                const saved = localStorage.getItem('wmebem_rsi_data_v3');
                 if (saved) {
                     try {
                         const parsed = JSON.parse(saved);
@@ -528,12 +586,18 @@
                 setCheck('conf_etco2', d.procedure.etco2);
                 setCheck('conf_ausc', d.procedure.ausc);
 
+                // DAS Logic restore
                 setCheck('failed_airway', d.procedure.failed);
                 if(d.procedure.failed) document.getElementById('failed_airway_details').classList.remove('hidden');
-                setCheck('plan_a_fail', d.procedure.planA);
-                setCheck('plan_b_used', d.procedure.planB);
-                setCheck('plan_c_used', d.procedure.planC);
-                setCheck('plan_d_used', d.procedure.planD);
+                
+                setCheck('plan_a_failed_confirm', d.procedure.planA);
+                if(d.procedure.planA) document.getElementById('box_plan_b').classList.remove('hidden');
+
+                setCheck('plan_b_failed_confirm', d.procedure.planB);
+                if(d.procedure.planB) document.getElementById('box_plan_c').classList.remove('hidden');
+
+                setCheck('plan_c_failed_confirm', d.procedure.planC);
+                if(d.procedure.planC) document.getElementById('box_plan_d').classList.remove('hidden');
 
                 // Post
                 setVal('vent_mode', d.post.mode);
@@ -670,14 +734,45 @@
                 if(d.procedure.ausc) conf.push('Auscultation');
                 if(conf.length) h += `Confirmation: ${conf.join(', ')}.<br>`;
                 
-                if(d.procedure.failed) {
-                    h += `<strong>⚠️ DIFFICULT AIRWAY ENCOUNTERED:</strong> `;
-                    let failDetails = [];
-                    if(d.procedure.planA) failDetails.push('Plan A Failed');
-                    if(d.procedure.planB) failDetails.push('Plan B (SGA) Used');
-                    if(d.procedure.planC) failDetails.push('Plan C (Mask) Used');
-                    if(d.procedure.planD) failDetails.push('Plan D (FONA) Required');
-                    h += `${failDetails.join(', ')}.<br>`;
+                // DAS LOGIC
+                if(document.getElementById('failed_airway').checked) {
+                    h += `<br><div style="border-left: 4px solid red; padding-left: 8px; margin-top: 8px;">`;
+                    h += `<strong>⚠️ DAS DIFFICULT AIRWAY ALGORITHM ACTIVATED</strong><br>`;
+
+                    // Plan A details
+                    if(document.getElementById('plan_a_failed_confirm').checked) {
+                        h += `<strong>PLAN A FAILED (Intubation):</strong> `;
+                        let aOpts = [];
+                        if(document.getElementById('das_opt_nmba').checked) aOpts.push('Full NMBA');
+                        if(document.getElementById('das_opt_video').checked) aOpts.push('Video Laryngoscopy');
+                        if(document.getElementById('das_opt_elm').checked) aOpts.push('ELM/Cricoid Off');
+                        if(document.getElementById('das_opt_bougie').checked) aOpts.push('Bougie');
+                        h += `Attempts exhausted. Optimisation: ${aOpts.join(', ')}.<br>`;
+                    }
+
+                    // Plan B details
+                    if(document.getElementById('plan_b_failed_confirm').checked) {
+                        const sadDev = document.getElementById('das_sad_type').value || 'SAD';
+                        const sadSize = document.getElementById('das_sad_size').value || '?';
+                        h += `<strong>PLAN B FAILED (SAD Rescue):</strong> Device: ${sadDev} (Size ${sadSize}). Ventilation attempt failed.<br>`;
+                    } else if (document.getElementById('plan_a_failed_confirm').checked) {
+                        // Plan A failed but B didn't fail (meaning B succeeded)
+                        const sadDev = document.getElementById('das_sad_type').value || 'SAD';
+                        h += `<strong>PLAN B SUCCESS:</strong> Rescue oxygenation established with ${sadDev}.<br>`;
+                    }
+
+                    // Plan C details
+                    if(document.getElementById('plan_c_failed_confirm').checked) {
+                        h += `<strong>PLAN C FAILED (Facemask):</strong> 2-person technique failed. <strong>CICO DECLARED.</strong><br>`;
+                    }
+
+                    // Plan D details
+                    if(document.getElementById('box_plan_d') && !document.getElementById('box_plan_d').classList.contains('hidden')) {
+                        h += `<strong>PLAN D (eFONA) INITIATED:</strong> Scalpel/Bougie/Tube technique.<br>`;
+                        if(document.getElementById('das_d_conf').checked) h += `<strong>SUCCESS:</strong> Tracheal ventilation confirmed via FONA.<br>`;
+                    }
+                    
+                    h += `</div>`;
                 }
 
                 // Post
@@ -771,16 +866,86 @@
             bindChk('conf_etco2', rsiData.procedure, 'etco2');
             bindChk('conf_ausc', rsiData.procedure, 'ausc');
 
-            // Failed Airway
+            // DAS LOGIC HANDLERS
             document.getElementById('failed_airway').addEventListener('change', e => {
                 rsiData.procedure.failed = e.target.checked;
                 document.getElementById('failed_airway_details').classList.toggle('hidden', !e.target.checked);
                 updateNote();
             });
-            bindChk('plan_a_fail', rsiData.procedure, 'planA');
-            bindChk('plan_b_used', rsiData.procedure, 'planB');
-            bindChk('plan_c_used', rsiData.procedure, 'planC');
-            bindChk('plan_d_used', rsiData.procedure, 'planD');
+
+            // DAS Image Toggle
+            const toggleBtn = document.getElementById('toggleAlgoImages');
+            if(toggleBtn) {
+                toggleBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const imgBox = document.getElementById('algoImages');
+                    imgBox.classList.toggle('hidden');
+                    toggleBtn.innerText = imgBox.classList.contains('hidden') ? '📷 Show DAS Algorithms' : '🙈 Hide Images';
+                });
+            }
+            
+            // Progressive Failure
+            const planAFail = document.getElementById('plan_a_failed_confirm');
+            const planBFail = document.getElementById('plan_b_failed_confirm');
+            const planCFail = document.getElementById('plan_c_failed_confirm');
+            const boxB = document.getElementById('box_plan_b');
+            const boxC = document.getElementById('box_plan_c');
+            const boxD = document.getElementById('box_plan_d');
+
+            if(planAFail) {
+                planAFail.addEventListener('change', (e) => {
+                    if(e.target.checked) {
+                        boxB.classList.remove('hidden');
+                        rsiData.procedure.planA = true; 
+                    } else {
+                        boxB.classList.add('hidden');
+                        boxC.classList.add('hidden');
+                        boxD.classList.add('hidden');
+                        planBFail.checked = false;
+                        planCFail.checked = false;
+                        rsiData.procedure.planA = false; 
+                    }
+                    updateNote();
+                });
+            }
+
+            if(planBFail) {
+                planBFail.addEventListener('change', (e) => {
+                    if(e.target.checked) {
+                        boxC.classList.remove('hidden');
+                        rsiData.procedure.planB = true;
+                    } else {
+                        boxC.classList.add('hidden');
+                        boxD.classList.add('hidden');
+                        planCFail.checked = false;
+                        rsiData.procedure.planB = false;
+                    }
+                    updateNote();
+                });
+            }
+
+            if(planCFail) {
+                planCFail.addEventListener('change', (e) => {
+                    if(e.target.checked) {
+                        boxD.classList.remove('hidden');
+                        rsiData.procedure.planC = true;
+                    } else {
+                        boxD.classList.add('hidden');
+                        rsiData.procedure.planC = false;
+                    }
+                    updateNote();
+                });
+            }
+            
+            // DAS Data Binding (Simple Checkboxes)
+            const bindDas = (id) => document.getElementById(id).addEventListener('change', updateNote);
+            ['das_opt_nmba', 'das_opt_video', 'das_opt_elm', 'das_opt_bougie', 
+             'das_sad_conf', 'das_c_2person', 'das_c_adjuncts',
+             'das_d_neck', 'das_d_inc', 'das_d_tube', 'das_d_conf'].forEach(bindDas);
+            
+            document.getElementById('das_sad_type').addEventListener('input', updateNote);
+            document.getElementById('das_sad_size').addEventListener('input', updateNote);
+
 
             // Post
             document.getElementById('vent_mode').addEventListener('input', e => { rsiData.post.mode = e.target.value; updateNote(); });
@@ -814,7 +979,7 @@
             // Reset
             document.getElementById('resetData').addEventListener('click', () => {
                 if(confirm('Clear all data?')) {
-                    localStorage.removeItem('wmebem_rsi_data_v2');
+                    localStorage.removeItem('wmebem_rsi_data_v3');
                     location.reload();
                 }
             });
